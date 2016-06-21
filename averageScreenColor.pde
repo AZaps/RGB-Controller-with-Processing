@@ -15,6 +15,12 @@ String comPort = "COM1";
 int width = 2560;
 int height = 1440;
 
+// Every 8 pixels will be sampled
+int pixelDivisor = 8;
+
+// Total amount of pixels in the screen capture
+int totalPixels = (width/pixelDivisor) * (height/pixelDivisor);
+
 void setup() {
   port = new Serial(this, comPort, 9600);
   
@@ -39,8 +45,8 @@ void draw() {
   
   BufferedImage screenshot = bot.createScreenCapture(new Rectangle(new Dimension(width, height)));
   
-  for (int i = 0; i < width; i = i + 8) {
-    for (int j = 0; j < height; j = j + 8) {
+  for (int i = 0; i < width; i = i + pixelDivisor) {
+    for (int j = 0; j < height; j = j + pixelDivisor) {
       pixel = screenshot.getRGB(i, j);
       r = r + (int)(255 & (pixel >> 16));
       g = g + (int)(255 & (pixel >> 8));
@@ -48,9 +54,9 @@ void draw() {
     }
   }
   
-  r = r / (57600);
-  g = g / (57600);
-  b = b / (57600);
+  r = r / (totalPixels);
+  g = g / (totalPixels);
+  b = b / (totalPixels);
   
   print("red = "); println(r);
   print("green = "); println(g);
